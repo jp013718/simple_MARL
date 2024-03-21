@@ -9,6 +9,7 @@ class MARLGridworld(MultiAgentEnv):
   metadata = {"render_modes":["human","rgb_array"], "render_fps": 4}
 
   def __init__(self, render_mode=None, size=5, max_steps=None):
+    super().__init__()
     self.size = size # Size of the gridworld
     self.window_size = 512 # Size of the pygame window
 
@@ -20,17 +21,17 @@ class MARLGridworld(MultiAgentEnv):
       {
         "agent_1": spaces.Dict(
           {
-            "agent_1":spaces.Box(0, size - 1, shape=(2,), dtype=int),
-            "agent_2":spaces.Box(0, size - 1, shape=(4,), dtype=int),
-          }
-        ), 
-        "agent_2": spaces.Dict(
-          {
-            "agent_1":spaces.Box(0, size - 1, shape=(2,), dtype=int),
-            "agent_2":spaces.Box(0, size - 1, shape=(4,), dtype=int),
+            "agent_1": spaces.Box(0, size - 1, shape=(2,), dtype=int),
+            "agent_2": spaces.Box(0, size - 1, shape=(2,), dtype=int)
           }
         ),
-      }    
+        "agent_2": spaces.Dict(
+          {
+            "agent_1": spaces.Box(0, size - 1, shape=(2,), dtype=int),
+            "agent_2": spaces.Box(0, size - 1, shape=(2,), dtype=int)
+          }  
+        )
+      }
     )    
 
     # We have 4 total actions that can be taken, so we'll represent it with discrete actions
@@ -67,8 +68,14 @@ class MARLGridworld(MultiAgentEnv):
   # as easily be done in the 'step' and 'reset' methods
   def _get_obs(self):
     return {
-      "agent_1": {"agent_1":self._agent_1_location, "agent_2": self._agent_2_location},
-      "agent_2": {"agent_1":self._agent_1_location, "agent_2": self._agent_2_location}
+      "agent_1": {
+        "agent_1": self._agent_1_location,
+        "agent_2": self._agent_2_location
+      },
+      "agent_2": {
+        "agent_1": self._agent_1_location,
+        "agent_2": self._agent_2_location
+      }
     }
 
   # A similar function can be used for the info returned by 'step' and 'reset'. Here, we return the 
@@ -142,8 +149,8 @@ class MARLGridworld(MultiAgentEnv):
     }
 
     reward = {
-      "agent_1": 50 if terminated else -1,
-      "agent_2": 50 if terminated else -1
+      "agent_1": 50 if terminated["__all__"] else -1,
+      "agent_2": 50 if terminated["__all__"] else -1
     }
     observation = self._get_obs()
     info = self._get_info()
@@ -152,8 +159,11 @@ class MARLGridworld(MultiAgentEnv):
       self._render_frame()
 
     self.steps += 1
-    truncated = False if self._max_steps is None else self.steps >= self._max_steps
-
+    truncated = {
+      "agent_1": False if self._max_steps is None else self.steps >= self._max_steps,
+      "agent_2": False if self._max_steps is None else self.steps >= self._max_steps,
+      "__all__": False if self._max_steps is None else self.steps >= self._max_steps
+    }
     return observation, reward, terminated, truncated, info
   
   """

@@ -41,7 +41,7 @@ class AccCallback(DefaultCallbacks):
       "ERROR: 'on_episode_step()' callback should not be called right "
       "after env reset!"
     )
-    target_found = np.array_equal(episode.last_info_for("agent_1")["current_loc"], episode.last_info_for("agent_2")["current_loc"])
+    target_found = [1] if np.array_equal(episode.last_info_for("agent_1")["current_loc"], episode.last_info_for("agent_2")["current_loc"]) else [0]
     episode.user_data["target_found"] = target_found
 
   def on_episode_end(
