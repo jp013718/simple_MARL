@@ -52,7 +52,7 @@ while True:
   print(f'Elapsed Time: {int(elapsed_time)}s')
   print()
   
-  if num_episodes % 2 == 0:
+  if num_episodes % 2 == 0 and num_episodes != train_duration:
     save_result = algo.save(checkpoint_dir=f"results/algo_{num_episodes}")
     save_path = save_result.checkpoint.path
     print(f"Checkpoint reached. New algorithm saved to {save_path}")
