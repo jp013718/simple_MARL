@@ -38,6 +38,7 @@ algo = config.build()
 
 # Number of episodes
 train_duration = 10
+save_freq = 2
 elapsed_time = 0
 num_episodes = 0
 
@@ -54,7 +55,7 @@ while True:
   print(f'Elapsed Time: {int(elapsed_time)}s')
   print()
   
-  if num_episodes % 2 == 0 and num_episodes != train_duration:
+  if num_episodes % save_freq == 0 and num_episodes != train_duration:
     save_result = algo.save(checkpoint_dir=f"results/algo_{num_episodes}")
     save_path = save_result.checkpoint.path
     print(f"Checkpoint reached. New algorithm saved to {save_path}")
