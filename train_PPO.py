@@ -31,6 +31,8 @@ config = (
   )
 )
 
+del temp_env
+
 # Build allgorithm config
 algo = config.build()
 
